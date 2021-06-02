@@ -1,19 +1,19 @@
 <template>
   <v-app>
     <v-main>
-      <ToDo />
+      <Main />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import ToDo from "./components/ToDo";
+import Main from "./components/Main";
 
 export default {
   name: "App",
 
   components: {
-    ToDo,
+    Main,
   },
 
   data: () => ({
