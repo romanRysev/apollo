@@ -48,6 +48,11 @@ export default {
       newTask.id = shortid.generate();
 
       this.taskList.tasks.push(newTask);
+      this.$store.commit("addToChangesStack", {
+        listId: this.taskList.id,
+        mode: "new task",
+        taskId: newTask.id,
+      });
     },
     onDelete(task) {
       this.taskList.tasks.splice(this.taskList.tasks.indexOf(task), 1);

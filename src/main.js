@@ -18,7 +18,9 @@ const apolloProvider = new VueApollo({
 
 cache.writeData({
   data: {
-    lists: JSON.parse(localStorage.getItem("lists")),
+    lists: localStorage.getItem("lists")
+      ? JSON.parse(localStorage.getItem("lists"))
+      : [],
   },
 });
 

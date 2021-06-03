@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 export const listQuery = gql`
-  {
+  query {
     lists @client {
       id
       title

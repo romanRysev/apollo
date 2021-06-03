@@ -37,7 +37,7 @@
             <v-col>
               <v-tooltip top open-delay="500">
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn class="button" v-bind="attrs" v-on="on"
+                  <v-btn class="button" v-bind="attrs" v-on="on" @click="undo"
                     ><v-icon>mdi-undo</v-icon></v-btn
                   >
                 </template>
@@ -79,25 +79,6 @@ export default {
     TaskList,
   },
   data: () => ({
-    items: [
-      {
-        title: "title",
-        tasks: [
-          { id: "1", text: "text", done: false },
-          { id: "2", text: "text2", done: true },
-          { id: "3", text: "text3", done: false },
-          { id: "4", text: "text4", done: false },
-        ],
-      },
-      {
-        title: "title2",
-        tasks: [
-          { id: "5", text: "text12", done: false },
-          { id: "6", text: "text13", done: false },
-          { id: "7", text: "text14", done: true },
-        ],
-      },
-    ],
     isModalOpen: false,
     modalContent: {},
     modalTitle: "",
@@ -143,6 +124,26 @@ export default {
       this.modalTitle = "Новый список";
       this.mode = "new";
       this.isModalOpen = true;
+    },
+    undo() {
+      const changesStack = this.$store.getters.getChangesStack;
+      const currentStep = this.$store.getters.getCurrentStep;
+      if (currentStep >= 0) {
+        switch (changesStack[changesStack.length - 1].mode) {
+          case "new task":
+            this.modalContent.tasks.pop();
+
+            break;
+
+          default:
+            break;
+        }
+      }
+
+      this.$apollo.mutate({
+        mutation: changeListMutation,
+        variables: { list: this.modalContent },
+      });
     },
   },
 };
