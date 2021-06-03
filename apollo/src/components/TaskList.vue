@@ -16,6 +16,7 @@
 
 <script>
 import Task from "@/components/Task.vue";
+import shortid from "shortid";
 export default {
   components: { Task },
   props: {
@@ -39,14 +40,12 @@ export default {
     },
     onAdding() {
       const newTask = {
+        __typename: "Task",
         text: "",
         done: false,
       };
-      if (this.taskList.tasks.length > 0) {
-        newTask.id = this.taskList.tasks[this.taskList.tasks.length - 1].id + 1;
-      } else {
-        newTask.id = 0;
-      }
+
+      newTask.id = shortid.generate();
 
       this.taskList.tasks.push(newTask);
     },
