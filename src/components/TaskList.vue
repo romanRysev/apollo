@@ -1,13 +1,19 @@
 <template>
   <section>
     <h1 v-if="disabled">{{ taskList.title }}</h1>
-    <v-text-field v-else v-model="taskList.title" label="Название" />
+    <v-text-field
+      v-else
+      v-model="taskList.title"
+      label="Название"
+      @input="$emit('change', tasks)"
+    />
     <Task
       v-for="task in list()"
       :key="task.id"
       :task="task"
       :disabled="disabled"
       @delete="onDelete"
+      @change="$emit('change', tasks)"
     />
     <v-icon @click="onAdding" v-if="!disabled">mdi-plus</v-icon>
     <p v-if="cropped">...</p>
@@ -27,16 +33,22 @@ export default {
   data() {
     return {
       cropped: false,
+      tasks: this.taskList,
     };
+  },
+  beforeUpdate() {
+    this.tasks = this.taskList;
   },
   methods: {
     list() {
-      if (this.short) {
-        if (this.taskList.tasks.length > 3) {
-          this.cropped = true;
-        }
-        return this.taskList.tasks.slice(0, 3);
-      } else return this.taskList.tasks;
+      console.log("321", this.taskList);
+      if (this.short && this.tasks.tasks.length > 3) {
+        this.cropped = true;
+        return this.tasks.tasks.slice(0, 3);
+      } else {
+        this.cropped = false;
+        return this.tasks.tasks;
+      }
     },
     onAdding() {
       const newTask = {
@@ -47,15 +59,22 @@ export default {
 
       newTask.id = shortid.generate();
 
-      this.taskList.tasks.push(newTask);
-      this.$store.commit("addToChangesStack", {
-        listId: this.taskList.id,
+      this.tasks.tasks.push(newTask);
+      this.$store.dispatch("addToChangesStack", {
+        listId: this.tasks.id,
         mode: "new task",
-        taskId: newTask.id,
+        task: newTask,
       });
+      this.$emit("change", this.tasks);
     },
     onDelete(task) {
-      this.taskList.tasks.splice(this.taskList.tasks.indexOf(task), 1);
+      this.$store.dispatch("addToChangesStack", {
+        listId: this.tasks.id,
+        mode: "delete task",
+        task: task,
+      });
+      this.tasks.tasks.splice(this.tasks.tasks.indexOf(task), 1);
+      this.$emit("change", this.tasks);
     },
   },
 };

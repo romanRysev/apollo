@@ -29,4 +29,8 @@ new Vue({
   vuetify,
   apolloProvider,
   render: (h) => h(App),
+
+  created: function () {
+    this.$store.dispatch("initializeState");
+  },
 }).$mount("#app");

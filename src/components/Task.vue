@@ -3,12 +3,17 @@
     <v-icon v-if="!disabled" class="task__icon" @click="$emit('delete', task)"
       >mdi-close</v-icon
     >
-    <v-checkbox v-model="task.done" :disabled="disabled" />
+    <v-checkbox
+      v-model="task.done"
+      :disabled="disabled"
+      @input="$emit('change')"
+    />
     <v-text-field
       v-model="task.text"
       :disabled="disabled"
       placeholder="текст задачи"
       :class="{ task__text_done: task.done }"
+      @input="$emit('change')"
     ></v-text-field>
   </section>
 </template>
