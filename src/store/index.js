@@ -8,16 +8,13 @@ export default new Vuex.Store({
   mutations: {
     setChangesStack(state, value) {
       state.changesStack.push(value)
-      console.log(state.changesStack)
     },
 
     moveToRedoStack(state) {
       state.redoStack.push(state.changesStack.pop())
-      console.log(state.changesStack, state.redoStack)
     },
     moveToChangesStack(state) {
       state.changesStack.push(state.redoStack.pop())
-      console.log(state.changesStack, state.redoStack)
     },
     clearStacks(state) {
       state.changesStack = []

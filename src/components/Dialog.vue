@@ -3,7 +3,7 @@
     <v-dialog
       :value="true"
       scrollable
-      width="60%"
+      :width="window.width > 600 ? '60%' : '100%'"
       @click:outside="$emit('close')"
       ><v-card class="card card_modal"
         ><v-card-title>{{ modalTitle }}</v-card-title
@@ -53,7 +53,11 @@
               ><v-btn class="button" color="error" @click="onClose"
                 >Закрыть без сохранения</v-btn
               >
-              <v-btn class="button" color="error" @click="onDelete"
+              <v-btn
+                v-if="mode == 'edit'"
+                class="button"
+                color="error"
+                @click="onDelete"
                 >Удалить список!</v-btn
               >
             </v-col></v-row
@@ -85,17 +89,15 @@ export default {
   props: {
     modalTitle: { type: String, default: '' },
     modalContent: { type: Object },
+    mode: { type: String, default: '' },
   },
-  /*created() {
-    console.log(this.modalContent);
-    this.content = this.modalContent;
-  },*/
   data() {
     return {
       content: this.modalContent,
       confirmDialog: false,
       confirmDialogTitle: '',
       confirmMode: '',
+      window: { width: 0 },
     }
   },
   beforeUpdate() {
@@ -104,6 +106,13 @@ export default {
   beforeDestroy() {
     this.$store.commit('clearStacks')
     localStorage.removeItem('editableList')
+  },
+  created() {
+    window.addEventListener('resize', this.handleResize)
+    this.handleResize()
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize)
   },
   methods: {
     undo() {
@@ -121,15 +130,26 @@ export default {
             this.$store.commit('moveToRedoStack')
             break
 
+          case 'change taskList title':
+            this.content.title = changesStack[changesStack.length - 1].oldTitle
+            this.$store.commit('moveToRedoStack')
+            break
+
+          case 'change task field':
+            this.content.tasks[
+              this.content.tasks.findIndex(
+                (item) =>
+                  changesStack[changesStack.length - 1].task.id === item.id
+              )
+            ][changesStack[changesStack.length - 1].field] =
+              changesStack[changesStack.length - 1].oldValue
+
+            this.$store.commit('moveToRedoStack')
+            break
           default:
             break
         }
       }
-
-      /*this.$apollo.mutate({
-        mutation: changeListMutation,
-        variables: { list: this.content },
-      });*/
       this.writeLocalStorage(this.content)
     },
     redo() {
@@ -145,7 +165,20 @@ export default {
             this.content.tasks.pop()
             this.$store.commit('moveToChangesStack')
             break
+          case 'change taskList title':
+            this.content.title = redoStack[redoStack.length - 1].newTitle
+            this.$store.commit('moveToChangesStack')
+            break
+          case 'change task field':
+            this.content.tasks[
+              this.content.tasks.findIndex(
+                (item) => redoStack[redoStack.length - 1].task.id === item.id
+              )
+            ][redoStack[redoStack.length - 1].field] =
+              redoStack[redoStack.length - 1].newValue
 
+            this.$store.commit('moveToChangesStack')
+            break
           default:
             break
         }
@@ -176,6 +209,9 @@ export default {
         'editableList',
         JSON.stringify({ content: data, title: this.modalTitle })
       )
+    },
+    handleResize() {
+      this.window.width = window.innerWidth
     },
   },
 }

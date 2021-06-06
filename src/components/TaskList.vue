@@ -3,9 +3,9 @@
     <h1 v-if="disabled">{{ taskList.title }}</h1>
     <v-text-field
       v-else
-      v-model="taskList.title"
       label="Название"
-      @input="$emit('change', tasks)"
+      :value="tasks.title"
+      @input="onTitleInput"
     />
     <Task
       v-for="task in list()"
@@ -37,11 +37,11 @@ export default {
     }
   },
   beforeUpdate() {
+    console.log('upd')
     this.tasks = this.taskList
   },
   methods: {
     list() {
-      console.log('321', this.taskList)
       if (this.short && this.tasks.tasks.length > 3) {
         this.cropped = true
         return this.tasks.tasks.slice(0, 3)
@@ -74,6 +74,16 @@ export default {
         task: task,
       })
       this.tasks.tasks.splice(this.tasks.tasks.indexOf(task), 1)
+      this.$emit('change', this.tasks)
+    },
+    onTitleInput(value) {
+      this.$store.dispatch('addToChangesStack', {
+        listId: this.tasks.id,
+        mode: 'change taskList title',
+        oldTitle: this.tasks.title,
+        newTitle: value,
+      })
+      this.tasks.title = value
       this.$emit('change', this.tasks)
     },
   },

@@ -2,10 +2,10 @@
   <section>
     <v-container>
       <v-row class="justify-center">
-        <v-col lg="9">
+        <v-col lg="5" md="9">
           <v-card
-            v-for="(item, i) in lists"
-            :key="i"
+            v-for="item in lists"
+            :key="item.id"
             class="card"
             @click="onCardClick(item)"
           >
@@ -28,6 +28,7 @@
       v-if="isModalOpen"
       :modalContent="modalContent"
       :modalTitle="modalTitle"
+      :mode="mode"
       @save="onSave"
       @delete="onDelete(modalContent.id)"
       @close="isModalOpen = false"
@@ -87,6 +88,7 @@ export default {
     onCardClick(card) {
       this.modalTitle = 'Изменение списка'
       this.modalContent = JSON.parse(JSON.stringify(card))
+      this.mode = 'edit'
       this.isModalOpen = true
     },
     onDelete(id) {

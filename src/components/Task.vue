@@ -4,16 +4,16 @@
       >mdi-close</v-icon
     >
     <v-checkbox
-      v-model="task.done"
       :disabled="disabled"
-      @input="$emit('change')"
+      :input-value="task.done"
+      @change="onInput($event, 'done')"
     />
     <v-text-field
-      v-model="task.text"
       :disabled="disabled"
       placeholder="текст задачи"
       :class="{ task__text_done: task.done }"
-      @input="$emit('change')"
+      :value="task.text"
+      @input="onInput($event, 'text')"
     ></v-text-field>
   </section>
 </template>
@@ -21,6 +21,20 @@
 <script>
 export default {
   props: { task: Object, disabled: { type: Boolean, default: false } },
+  methods: {
+    onInput(value, field) {
+      console.log(value, this.task[field])
+      this.$store.dispatch('addToChangesStack', {
+        mode: 'change task field',
+        task: this.task,
+        newValue: value,
+        oldValue: this.task[field],
+        field: field,
+      })
+      this.task[field] = value
+      this.$emit('change')
+    },
+  },
 }
 </script>
 
