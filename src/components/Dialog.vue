@@ -11,8 +11,8 @@
           ><TaskList
             :taskList="content"
             @change="
-              content = $event;
-              writeLocalStorage($event);
+              content = $event
+              writeLocalStorage($event)
             " /></v-card-text
         ><v-card-actions>
           <v-row>
@@ -79,11 +79,11 @@
 </template>
 
 <script>
-import TaskList from "@/components/TaskList.vue";
+import TaskList from '@/components/TaskList.vue'
 export default {
   components: { TaskList },
   props: {
-    modalTitle: { type: String, default: "" },
+    modalTitle: { type: String, default: '' },
     modalContent: { type: Object },
   },
   /*created() {
@@ -94,35 +94,35 @@ export default {
     return {
       content: this.modalContent,
       confirmDialog: false,
-      confirmDialogTitle: "",
-      confirmMode: "",
-    };
+      confirmDialogTitle: '',
+      confirmMode: '',
+    }
   },
   beforeUpdate() {
-    this.content = this.modalContent;
+    this.content = this.modalContent
   },
   beforeDestroy() {
-    this.$store.commit("clearStacks");
-    localStorage.removeItem("editableList");
+    this.$store.commit('clearStacks')
+    localStorage.removeItem('editableList')
   },
   methods: {
     undo() {
-      const changesStack = this.$store.getters.getChangesStack;
+      const changesStack = this.$store.getters.getChangesStack
       if (changesStack.length > 0) {
         switch (changesStack[changesStack.length - 1].mode) {
-          case "new task":
-            console.log(this.content);
-            this.content.tasks.pop();
-            this.$store.commit("moveToRedoStack");
+          case 'new task':
+            console.log(this.content)
+            this.content.tasks.pop()
+            this.$store.commit('moveToRedoStack')
 
-            break;
-          case "delete task":
-            this.content.tasks.push(changesStack[changesStack.length - 1].task);
-            this.$store.commit("moveToRedoStack");
-            break;
+            break
+          case 'delete task':
+            this.content.tasks.push(changesStack[changesStack.length - 1].task)
+            this.$store.commit('moveToRedoStack')
+            break
 
           default:
-            break;
+            break
         }
       }
 
@@ -130,55 +130,55 @@ export default {
         mutation: changeListMutation,
         variables: { list: this.content },
       });*/
-      this.writeLocalStorage(this.content);
+      this.writeLocalStorage(this.content)
     },
     redo() {
-      const redoStack = this.$store.getters.getRedoStack;
+      const redoStack = this.$store.getters.getRedoStack
       if (redoStack.length > 0) {
         switch (redoStack[redoStack.length - 1].mode) {
-          case "new task":
-            this.content.tasks.push(redoStack[redoStack.length - 1].task);
-            this.$store.commit("moveToChangesStack");
+          case 'new task':
+            this.content.tasks.push(redoStack[redoStack.length - 1].task)
+            this.$store.commit('moveToChangesStack')
 
-            break;
-          case "delete task":
-            this.content.tasks.pop();
-            this.$store.commit("moveToChangesStack");
-            break;
+            break
+          case 'delete task':
+            this.content.tasks.pop()
+            this.$store.commit('moveToChangesStack')
+            break
 
           default:
-            break;
+            break
         }
       }
-      this.writeLocalStorage(this.content);
+      this.writeLocalStorage(this.content)
     },
     onClose() {
-      this.confirmDialogTitle = "Закрытие без сохранения";
-      this.confirmDialog = true;
-      this.confirmMode = "close";
+      this.confirmDialogTitle = 'Закрытие без сохранения'
+      this.confirmDialog = true
+      this.confirmMode = 'close'
     },
     onConfirm() {
-      if (this.confirmMode === "close") {
-        this.$emit("close");
+      if (this.confirmMode === 'close') {
+        this.$emit('close')
       } else {
-        this.$emit("delete");
-        this.$emit("close");
+        this.$emit('delete')
+        this.$emit('close')
       }
-      this.confirmDialog = false;
+      this.confirmDialog = false
     },
     onDelete() {
-      this.confirmDialogTitle = "Удаление списка";
-      this.confirmDialog = true;
-      this.confirmMode = "delete";
+      this.confirmDialogTitle = 'Удаление списка'
+      this.confirmDialog = true
+      this.confirmMode = 'delete'
     },
     writeLocalStorage(data) {
       localStorage.setItem(
-        "editableList",
+        'editableList',
         JSON.stringify({ content: data, title: this.modalTitle })
-      );
+      )
     },
   },
-};
+}
 </script>
 
 <style></style>

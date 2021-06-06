@@ -21,8 +21,8 @@
 </template>
 
 <script>
-import Task from "@/components/Task.vue";
-import shortid from "shortid";
+import Task from '@/components/Task.vue'
+import shortid from 'shortid'
 export default {
   components: { Task },
   props: {
@@ -34,50 +34,50 @@ export default {
     return {
       cropped: false,
       tasks: this.taskList,
-    };
+    }
   },
   beforeUpdate() {
-    this.tasks = this.taskList;
+    this.tasks = this.taskList
   },
   methods: {
     list() {
-      console.log("321", this.taskList);
+      console.log('321', this.taskList)
       if (this.short && this.tasks.tasks.length > 3) {
-        this.cropped = true;
-        return this.tasks.tasks.slice(0, 3);
+        this.cropped = true
+        return this.tasks.tasks.slice(0, 3)
       } else {
-        this.cropped = false;
-        return this.tasks.tasks;
+        this.cropped = false
+        return this.tasks.tasks
       }
     },
     onAdding() {
       const newTask = {
-        __typename: "Task",
-        text: "",
+        __typename: 'Task',
+        text: '',
         done: false,
-      };
+      }
 
-      newTask.id = shortid.generate();
+      newTask.id = shortid.generate()
 
-      this.tasks.tasks.push(newTask);
-      this.$store.dispatch("addToChangesStack", {
+      this.tasks.tasks.push(newTask)
+      this.$store.dispatch('addToChangesStack', {
         listId: this.tasks.id,
-        mode: "new task",
+        mode: 'new task',
         task: newTask,
-      });
-      this.$emit("change", this.tasks);
+      })
+      this.$emit('change', this.tasks)
     },
     onDelete(task) {
-      this.$store.dispatch("addToChangesStack", {
+      this.$store.dispatch('addToChangesStack', {
         listId: this.tasks.id,
-        mode: "delete task",
+        mode: 'delete task',
         task: task,
-      });
-      this.tasks.tasks.splice(this.tasks.tasks.indexOf(task), 1);
-      this.$emit("change", this.tasks);
+      })
+      this.tasks.tasks.splice(this.tasks.tasks.indexOf(task), 1)
+      this.$emit('change', this.tasks)
     },
   },
-};
+}
 </script>
 
 <style></style>

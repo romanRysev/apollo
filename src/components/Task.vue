@@ -21,7 +21,7 @@
 <script>
 export default {
   props: { task: Object, disabled: { type: Boolean, default: false } },
-};
+}
 </script>
 
 <style>

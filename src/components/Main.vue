@@ -50,14 +50,14 @@
 </template>
 
 <script>
-import TaskList from "@/components/TaskList.vue";
-import Dialog from "@/components/Dialog.vue";
+import TaskList from '@/components/TaskList.vue'
+import Dialog from '@/components/Dialog.vue'
 import {
   listQuery,
   changeListMutation,
   addListMutation,
   deleteListMutation,
-} from "@/queries.js";
+} from '@/queries.js'
 
 export default {
   components: {
@@ -66,16 +66,16 @@ export default {
   },
   created() {
     if (this.$store.getters.getEditableList) {
-      this.modalContent = this.$store.getters.getEditableList.content;
-      this.modalTitle = this.$store.getters.getEditableList.title;
-      this.isModalOpen = true;
+      this.modalContent = this.$store.getters.getEditableList.content
+      this.modalTitle = this.$store.getters.getEditableList.title
+      this.isModalOpen = true
     }
   },
   data: () => ({
     isModalOpen: false,
     modalContent: {},
-    modalTitle: "",
-    mode: "",
+    modalTitle: '',
+    mode: '',
     confirmDialog: false,
   }),
   apollo: {
@@ -85,44 +85,44 @@ export default {
   },
   methods: {
     onCardClick(card) {
-      this.modalTitle = "Изменение списка";
-      this.modalContent = JSON.parse(JSON.stringify(card));
-      this.isModalOpen = true;
+      this.modalTitle = 'Изменение списка'
+      this.modalContent = JSON.parse(JSON.stringify(card))
+      this.isModalOpen = true
     },
     onDelete(id) {
-      this.deletableListId = id;
-      this.confirmDialog = true;
+      this.deletableListId = id
+      this.confirmDialog = true
     },
     deleteList() {
-      this.confirmDialog = false;
+      this.confirmDialog = false
       this.$apollo.mutate({
         mutation: deleteListMutation,
         variables: { id: this.deletableListId },
-      });
+      })
     },
     onSave(modalContent) {
-      console.log(modalContent);
-      if (this.mode !== "new") {
+      console.log(modalContent)
+      if (this.mode !== 'new') {
         this.$apollo.mutate({
           mutation: changeListMutation,
           variables: { list: modalContent },
-        });
+        })
       } else {
         this.$apollo.mutate({
           mutation: addListMutation,
           variables: { list: modalContent },
-        });
+        })
       }
-      this.isModalOpen = false;
+      this.isModalOpen = false
     },
     onNew() {
-      this.modalContent = { title: "", tasks: [] };
-      this.modalTitle = "Новый список";
-      this.mode = "new";
-      this.isModalOpen = true;
+      this.modalContent = { title: '', tasks: [] }
+      this.modalTitle = 'Новый список'
+      this.mode = 'new'
+      this.isModalOpen = true
     },
   },
-};
+}
 </script>
 <style>
 .card {

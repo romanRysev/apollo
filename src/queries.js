@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag'
 export const listQuery = gql`
   query {
     lists @client {
@@ -11,12 +11,12 @@ export const listQuery = gql`
       }
     }
   }
-`;
+`
 export const changeListMutation = gql`
   mutation ($list: List!) {
     changeList(list: $list) @client
   }
-`;
+`
 
 export const addListMutation = gql`
   mutation ($list: List!) {
@@ -30,10 +30,10 @@ export const addListMutation = gql`
       }
     }
   }
-`;
+`
 
 export const deleteListMutation = gql`
   mutation ($id: ID!) {
     deleteList(id: $id) @client
   }
-`;
+`
