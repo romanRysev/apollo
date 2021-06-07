@@ -16,7 +16,7 @@ export const typeDefs = gql`
   type Mutation {
     changeList(list: List!): Boolean
     deleteList(id: ID!): Boolean
-    addList(title: String!, tasks: [Task]): Item
+    addList(title: String!, tasks: [Task]): List
   }
 `
 
@@ -28,7 +28,7 @@ export const resolvers = {
       data.lists.splice(data.lists.indexOf(currentItem), 1, list)
       cache.writeQuery({ query: listQuery, data })
       localStorage.setItem('lists', JSON.stringify(data.lists))
-      return 'done!'
+      return true
     },
 
     addList: (_, { list }, { cache }) => {
